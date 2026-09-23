@@ -1,0 +1,471 @@
+:root{
+  --bg:#0d0d0d;
+  --card:#1a1a1a;
+  --card2:#161616;
+  --line:#2b2b2b;
+  --text:#f2f2f2;
+  --text-dim:#8a8a8a;
+  --accent:#ff3b30;
+  --accent-dim:#5c1512;
+  --radius:8px;
+  font-size:19px;
+}
+
+*{box-sizing:border-box;}
+
+html,body{
+  margin:0;
+  padding:0;
+  background:#000;
+  color:var(--text);
+  font-family:"Pixelify Sans",ui-monospace,"SFMono-Regular","Share Tech Mono","Space Mono",Menlo,Consolas,monospace;
+  -webkit-tap-highlight-color:transparent;
+}
+
+/* page + card animations */
+/* ---------------- animations ---------------- */
+@keyframes fadeSlideIn{
+  from{opacity:0; transform:translateY(10px);}
+  to{opacity:1; transform:translateY(0);}
+}
+@keyframes popIn{
+  from{opacity:0; transform:scale(.92);}
+  to{opacity:1; transform:scale(1);}
+}
+.view-enter{animation:fadeSlideIn .28s ease both;}
+
+button, .workout-row, .picker-row, .icon-btn, .nav-btn, .exercise-del, .row-edit, .row-del, .set-remove{
+  transition:transform .12s ease, opacity .12s ease, background-color .15s ease, color .15s ease, border-color .15s ease;
+}
+button:active, .icon-btn:active, .nav-btn:active, .workout-row:active, .picker-row:active{
+  transform:scale(.96);
+}
+.exercise-card, .set-row, .workout-row, .picker-row{
+  animation:fadeSlideIn .25s ease both;
+}
+.nav-btn.active svg{animation:popIn .2s ease both;}
+
+button, input{
+  font-family:inherit;
+  color:inherit;
+}
+
+#app{
+  max-width:540px;
+  margin:0 auto;
+  min-height:100vh;
+  background:var(--bg);
+  position:relative;
+}
+
+.view{
+  display:none;
+}
+.view.active{
+  display:block;
+}
+
+.screen{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  position:relative;
+}
+
+.scroll-area{
+  flex:1;
+  overflow-y:auto;
+  padding:20px;
+  padding-bottom:100px;
+}
+
+.form-scroll{
+  padding-bottom:36px;
+}
+
+/* header with back/next buttons */
+/* ---------- top bar ---------- */
+.top-bar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:16px 14px;
+  border-bottom:1px solid var(--line);
+}
+.top-bar-title{
+  font-size:1.2rem;
+  font-weight:600;
+  letter-spacing:.02em;
+}
+.icon-btn{
+  background:none;
+  border:none;
+  width:44px;
+  height:44px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--text);
+  cursor:pointer;
+  flex-shrink:0;
+}
+.icon-btn svg{width:24px;height:24px;stroke:currentColor;fill:currentColor;}
+.icon-btn-spacer{width:44px;height:44px;}
+
+/* fixed tab bar */
+/* ---------- bottom nav ---------- */
+.bottom-nav{
+  position:sticky;
+  bottom:0;
+  display:flex;
+  border-top:1px solid var(--line);
+  background:var(--bg);
+}
+.nav-btn{
+  flex:1;
+  background:none;
+  border:none;
+  padding:16px 0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--text-dim);
+  cursor:pointer;
+}
+.nav-btn svg{width:26px;height:26px;stroke:currentColor;fill:none;}
+.nav-btn.active{color:var(--accent);}
+
+.bottom-fixed{
+  position:sticky;
+  bottom:0;
+  padding:16px 18px;
+  background:linear-gradient(to top, var(--bg) 60%, transparent);
+}
+
+/* shared form controls */
+/* ---------- buttons / inputs ---------- */
+.btn-primary{
+  width:100%;
+  background:var(--text);
+  color:#000;
+  border:none;
+  border-radius:var(--radius);
+  padding:16px;
+  font-size:1.1rem;
+  font-weight:700;
+  cursor:pointer;
+  letter-spacing:.02em;
+}
+.btn-primary:active{opacity:.85;}
+
+.btn-outline{
+  width:100%;
+  background:var(--card);
+  color:var(--text);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:15px;
+  font-size:1.05rem;
+  cursor:pointer;
+}
+
+.btn-start{margin-bottom:18px;}
+
+.field-input{
+  width:100%;
+  background:var(--card);
+  border:1px solid var(--line);
+  color:var(--text);
+  border-radius:var(--radius);
+  padding:14px 16px;
+  font-size:1.05rem;
+  margin-bottom:16px;
+}
+.field-input::placeholder{color:var(--text-dim);}
+
+.field-label{
+  display:block;
+  font-size:.8rem;
+  color:var(--text-dim);
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  margin:0 0 8px 2px;
+}
+
+.link-back{
+  background:none;
+  border:none;
+  color:var(--text-dim);
+  font-size:.9rem;
+  padding:0 0 18px 0;
+  cursor:pointer;
+}
+
+.workout-name-input{
+  flex:1;
+  background:none;
+  border:none;
+  border-bottom:1px solid var(--line);
+  color:var(--text);
+  font-size:1.1rem;
+  padding:10px 10px;
+  margin:0 8px;
+  min-width:0;
+}
+.workout-name-input::placeholder{color:var(--text-dim);}
+
+.search-bar{padding:14px 20px 0 20px;}
+.search-bar input{
+  width:100%;
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:12px 18px;
+  color:var(--text);
+  font-size:1rem;
+}
+.search-bar input::placeholder{color:var(--text-dim);}
+
+/* saved workout cards */
+/* ---------- home workout list ---------- */
+.workout-row{
+  display:flex;
+  align-items:center;
+  background:var(--card);
+  border-radius:var(--radius);
+  padding:14px;
+  margin-bottom:12px;
+  cursor:pointer;
+}
+.row-thumb{
+  width:54px;height:54px;
+  border-radius:50%;
+  background:var(--card2);
+  border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+  overflow:hidden;
+  margin-right:14px;
+}
+.row-thumb img{width:100%;height:100%;object-fit:cover;}
+.row-thumb svg{width:22px;height:22px;stroke:var(--text-dim);fill:none;}
+.row-main{flex:1;min-width:0;}
+.row-title{font-size:1.05rem;font-weight:600;}
+.row-sub{font-size:.82rem;color:var(--text-dim);margin-top:3px;}
+.row-edit{
+  background:none;border:none;color:var(--text-dim);
+  width:38px;height:38px;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;flex-shrink:0;
+}
+.row-edit svg{width:19px;height:19px;stroke:currentColor;fill:none;}
+.row-del{
+  background:none;border:none;color:var(--text-dim);
+  width:38px;height:38px;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;flex-shrink:0;
+}
+.row-del svg{width:19px;height:19px;stroke:currentColor;fill:none;}
+
+.empty-msg{
+  color:var(--text-dim);
+  font-size:1rem;
+  text-align:center;
+  padding:48px 10px;
+}
+
+/* editable sets inside a workout */
+/* ---------- exercise card in workout view ---------- */
+.exercise-card{
+  background:var(--card);
+  border-radius:var(--radius);
+  padding:16px;
+  margin-bottom:14px;
+}
+.exercise-card-head{
+  display:flex;
+  align-items:center;
+  margin-bottom:12px;
+}
+.exercise-card-head .row-main{margin-right:6px;}
+.exercise-del{
+  margin-left:auto;
+  background:none;border:none;color:var(--text-dim);
+  width:36px;height:36px;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;
+}
+.exercise-del svg{width:19px;height:19px;stroke:currentColor;fill:none;}
+
+.set-row{
+  display:grid;
+  grid-template-columns:40px 1fr 1fr 32px;
+  gap:10px;
+  align-items:center;
+  margin-bottom:10px;
+}
+.set-label{font-size:.85rem;color:var(--text-dim);}
+.set-row input{
+  width:100%;
+  background:var(--card2);
+  border:1px solid var(--line);
+  border-radius:5px;
+  padding:10px 6px;
+  color:var(--text);
+  font-size:1rem;
+  text-align:center;
+}
+.set-col-label{font-size:.7rem;color:var(--text-dim);text-align:center;text-transform:uppercase;letter-spacing:.05em;}
+.set-remove{
+  background:none;border:none;color:var(--text-dim);
+  width:28px;height:28px;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;
+}
+.set-remove svg{width:15px;height:15px;stroke:currentColor;}
+
+.add-set-btn{
+  width:100%;
+  background:none;
+  border:1px dashed var(--line);
+  border-radius:5px;
+  color:var(--text-dim);
+  padding:10px;
+  font-size:.9rem;
+  cursor:pointer;
+  margin-top:4px;
+}
+
+/* circular exercise image uploader */
+/* ---------- image picker ---------- */
+.image-picker{
+  width:108px;height:108px;
+  border-radius:50%;
+  background:var(--card);
+  border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;
+  margin:10px auto 28px auto;
+  position:relative;
+  cursor:pointer;
+  overflow:hidden;
+}
+.image-picker.static-icon{cursor:default;}
+.image-placeholder-icon{width:32px;height:32px;stroke:var(--text-dim);fill:var(--text-dim);}
+.image-preview{width:100%;height:100%;object-fit:cover;}
+.image-edit-badge{
+  position:absolute;
+  bottom:3px;right:3px;
+  width:26px;height:26px;
+  background:var(--card2);
+  border:1px solid var(--line);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.75rem;
+}
+
+/* library rows with search */
+/* ---------- exercise picker list ---------- */
+.picker-row{
+  display:flex;
+  align-items:center;
+  padding:12px 4px;
+  border-bottom:1px solid var(--line);
+  cursor:pointer;
+}
+.picker-row .row-title{font-size:1.02rem;}
+.picker-row .row-sub{text-transform:capitalize;}
+
+/* progress chart + history table */
+/* ---------- analytics ---------- */
+.granularity-toggle{
+  display:flex;
+  gap:8px;
+  margin-bottom:18px;
+}
+.gran-btn{
+  flex:1;
+  background:var(--card);
+  border:1px solid var(--line);
+  color:var(--text-dim);
+  border-radius:5px;
+  padding:10px;
+  font-size:.88rem;
+  cursor:pointer;
+  text-transform:uppercase;
+  letter-spacing:.05em;
+}
+.gran-btn.active{
+  color:#000;
+  background:var(--text);
+  border-color:var(--text);
+}
+
+.graph-wrap{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:12px 8px;
+  margin-bottom:20px;
+  position:relative;
+  height:260px;
+}
+#progressCanvas{width:100%;height:100%;display:block;}
+.graph-empty{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--text-dim);
+  font-size:.9rem;
+}
+
+.data-table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:.92rem;
+}
+.data-table th{
+  text-align:left;
+  color:var(--text-dim);
+  font-weight:400;
+  padding:10px 4px;
+  border-bottom:1px solid var(--line);
+  text-transform:uppercase;
+  font-size:.75rem;
+  letter-spacing:.05em;
+}
+.data-table td{
+  padding:11px 4px;
+  border-bottom:1px solid var(--line);
+}
+
+/* scrollbar tidy */
+::-webkit-scrollbar{width:6px;}
+::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px;}
+
+/* export + import buttons */
+/* ---------- backup / export-import ---------- */
+.backup-section{
+  margin-top:32px;
+  border-top:1px solid var(--line);
+  padding-top:16px;
+}
+.backup-label{
+  font-size:.8rem;
+  color:var(--text-dim);
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  margin:0 0 12px 2px;
+}
+.backup-buttons{
+  display:flex;
+  gap:10px;
+}
+.btn-backup{
+  flex:1;
+  padding:12px;
+  font-size:.95rem;
+}
+
+/* ---------- last performed info in exercise picker ---------- */
+.last-sub{
+  color:var(--accent);
+  margin-top:4px;
+}

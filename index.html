@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Workout Tracker</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0d0d0d">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Workout">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<base target="_blank">
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ===================== HOME ===================== -->
+  <!-- home screen: workout list + backup -->
+<section class="view" id="view-home">
+    <div class="screen">
+      <div class="scroll-area">
+        <button class="btn-primary btn-start" id="btnStartWorkout">+ Start Workout</button>
+        <div id="workoutList" class="workout-list"></div>
+        <div class="backup-section">
+          <div class="backup-label">Backup &amp; Restore</div>
+          <div class="backup-buttons">
+            <button class="btn-outline btn-backup" id="btnExportData">Export</button>
+            <button class="btn-outline btn-backup" id="btnImportData">Import</button>
+          </div>
+          <input type="file" id="importFileInput" accept="application/json" style="display:none">
+        </div>
+      </div>
+      <nav class="bottom-nav">
+        <button class="nav-btn active" data-nav="home" title="Home">
+          <svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>
+        </button>
+        <button class="nav-btn" data-nav="analyticsList" title="Progress">
+          <svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20V13" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+        </button>
+      </nav>
+    </div>
+  </section>
+
+  <!-- ============== WORKOUT IN PROGRESS (screens 4 + 5) ============== -->
+  <!-- active workout screen: exercises + sets -->
+<section class="view" id="view-workout">
+    <div class="screen">
+      <div class="top-bar">
+        <button class="icon-btn" id="btnDiscardWorkout" title="Discard">
+          <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+        <span class="top-bar-title" id="workoutTopTitle">Workout</span>
+        <button class="icon-btn" id="btnFinalizeWorkout" title="Next">
+          <svg viewBox="0 0 24 24"><path d="M5 12h14M13 5l7 7-7 7" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+      <div class="scroll-area" id="workoutExerciseList"></div>
+      <div class="bottom-fixed">
+        <button class="btn-outline" id="btnAddExercise">+ Exercise</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== EXERCISE PICKER (screen 2) ===================== -->
+  <!-- exercise picker with search -->
+<section class="view" id="view-exercisePicker">
+    <div class="screen">
+      <div class="top-bar">
+        <button class="icon-btn" id="btnPickerBack" title="Back">
+          <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <input type="text" class="workout-name-input" id="workoutNameInput" placeholder="Name">
+        <button class="icon-btn" id="btnPickerAdd" title="Add exercise">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div class="search-bar">
+        <input type="text" id="exerciseSearch" placeholder="Search">
+      </div>
+      <div class="scroll-area" id="exercisePickerList"></div>
+    </div>
+  </section>
+
+  <!-- ===================== NEW / EDIT EXERCISE (screen 3) ===================== -->
+  <!-- create or edit an exercise -->
+<section class="view" id="view-newExercise">
+    <div class="screen">
+      <div class="top-bar">
+        <button class="icon-btn" id="btnNewExerciseClose" title="Cancel">
+          <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+        <span class="top-bar-title" id="newExerciseTitle">New Exercise</span>
+        <span class="icon-btn-spacer"></span>
+      </div>
+      <div class="scroll-area form-scroll">
+        <div class="image-picker" id="exerciseImagePicker">
+          <img id="exerciseImagePreview" class="image-preview" style="display:none">
+          <svg id="exerciseImagePlaceholder" viewBox="0 0 24 24" class="image-placeholder-icon"><rect x="3" y="5" width="18" height="14" rx="1" stroke-width="1.5" fill="none"/><circle cx="8.5" cy="10.5" r="1.5"/><path d="M21 15l-5-5-9 9" stroke-width="1.5" fill="none"/></svg>
+          <span class="image-edit-badge">✎</span>
+          <input type="file" id="exerciseImageInput" accept="image/*" style="display:none">
+        </div>
+        <input type="text" id="exerciseNameInput" class="field-input" placeholder="Name">
+        <input type="text" id="exerciseMuscleInput" class="field-input" placeholder="Target Muscle">
+        <button class="btn-primary" id="btnSubmitExercise">Submit</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FINALIZE WORKOUT (screen 6) ===================== -->
+  <!-- finalise workout: name + date -->
+<section class="view" id="view-finalize">
+    <div class="screen">
+      <div class="scroll-area form-scroll">
+        <button class="link-back" id="btnFinalizeBack">← back</button>
+        <div class="image-picker static-icon">
+          <svg viewBox="0 0 24 24" class="image-placeholder-icon"><rect x="3" y="5" width="18" height="14" rx="1" stroke-width="1.5" fill="none"/><circle cx="8.5" cy="10.5" r="1.5"/><path d="M21 15l-5-5-9 9" stroke-width="1.5" fill="none"/></svg>
+        </div>
+        <label class="field-label" for="finalizeNameInput">Name</label>
+        <input type="text" id="finalizeNameInput" class="field-input" placeholder="Name">
+        <label class="field-label" for="finalizeDateInput">Date</label>
+        <input type="date" id="finalizeDateInput" class="field-input">
+        <button class="btn-primary" id="btnEndWorkout">End Workout</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== ANALYTICS LIST (screen 7) ===================== -->
+  <!-- list of exercises for progress view -->
+<section class="view" id="view-analyticsList">
+    <div class="screen">
+      <div class="scroll-area" id="analyticsExerciseList"></div>
+      <nav class="bottom-nav">
+        <button class="nav-btn" data-nav="home" title="Home">
+          <svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>
+        </button>
+        <button class="nav-btn active" data-nav="analyticsList" title="Progress">
+          <svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20V13" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+        </button>
+      </nav>
+    </div>
+  </section>
+
+  <!-- ===================== ANALYTICS DETAIL (screen 8) ===================== -->
+  <!-- progress graph + history table -->
+<section class="view" id="view-analyticsDetail">
+    <div class="screen">
+      <div class="top-bar">
+        <button class="icon-btn" id="btnAnalyticsBack" title="Back">
+          <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <span class="top-bar-title" id="analyticsDetailTitle">Exercise</span>
+        <span class="icon-btn-spacer"></span>
+      </div>
+      <div class="scroll-area form-scroll">
+        <div class="granularity-toggle">
+          <button class="gran-btn active" data-gran="day">Day</button>
+          <button class="gran-btn" data-gran="month">Month</button>
+          <button class="gran-btn" data-gran="year">Year</button>
+        </div>
+        <div class="graph-wrap">
+          <canvas id="progressCanvas"></canvas>
+          <div id="graphEmpty" class="graph-empty" style="display:none">No data yet</div>
+        </div>
+        <table class="data-table" id="dataTable">
+          <thead><tr><th>Date</th><th>KG</th></tr></thead>
+          <tbody id="dataTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

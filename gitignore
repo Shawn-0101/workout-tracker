@@ -1,0 +1,13 @@
+# os files
+.DS_Store
+Thumbs.db
+
+# editor folders
+.vscode/
+.idea/
+
+# node (only if you use a local server like npx serve)
+node_modules/
+
+# logs
+*.log
