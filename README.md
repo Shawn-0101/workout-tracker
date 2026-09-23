@@ -30,11 +30,7 @@ It's a static site — no build step.
 2. Open the URL in your browser (e.g. `http://localhost:8000`).
 3. To install as an app on your phone: open the deployed URL in Chrome → menu → "Add to Home screen".
 
-## Deploy on GitHub Pages
 
-Push this repo to GitHub, then in the repo: **Settings → Pages → Source: Deploy from a branch → main → / (root)**. The app will be live at `https://<your-username>.github.io/<repo-name>/`.
-
-> Note: change `start_url` in `manifest.json` to `"./"` (already done) and keep the service worker at the repo root so caching works on Pages.
 
 ## Project structure
 
