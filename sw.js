@@ -1,5 +1,5 @@
 // cache name: bump to force update
-const CACHE_NAME = 'workout-tracker-v3';
+const CACHE_NAME = 'workout-tracker-v4';
 const APP_SHELL = [
   './',
   './index.html',
@@ -47,4 +47,4 @@ self.addEventListener('fetch', (event) => {
       }).catch(() => cached);
     })
   );
-});
+});

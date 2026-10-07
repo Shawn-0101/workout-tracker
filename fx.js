@@ -69,4 +69,47 @@
       c.classList.add('fx-draw');
     });
   });
+
+  // ---------- page transitions (View Transitions API) ----------
+  const DEPTH = { home: 0, analyticsList: 0, workout: 1, exercisePicker: 2, newExercise: 3, finalize: 2, analyticsDetail: 1 };
+  const TAB = { home: 0, analyticsList: 1 };
+  const orig = window.navigate;
+  if (reduce || typeof orig !== 'function' || !document.startViewTransition) return;
+
+  const root = document.documentElement;
+  const setNav = (name) => document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.nav === name));
+  const rowTitle = () => document.querySelector(`[data-analytics-id="${state.analyticsExerciseId}"] .row-title`);
+  let current = null;
+
+  window.navigate = function (name) {
+    const from = current;
+    current = name;
+    if (!from || from === name) return orig(name);
+
+    const isTab = (name in TAB) && (from in TAB);
+    root.dataset.vt = isTab
+      ? (TAB[name] > TAB[from] ? 'tab-right' : 'tab-left')
+      : ((DEPTH[name] ?? 0) >= (DEPTH[from] ?? 0) ? 'forward' : 'back');
+
+    // app.js flips the nav classes before navigating — put the old one back so the pill can slide
+    if (isTab) setNav(from);
+
+    // exercise name morphs into / out of the header
+    let morphFrom = null, morphTo = null;
+    if (from === 'analyticsList' && name === 'analyticsDetail') morphFrom = rowTitle();
+    if (from === 'analyticsDetail' && name === 'analyticsList') morphFrom = document.getElementById('analyticsDetailTitle');
+    if (morphFrom) morphFrom.style.viewTransitionName = 'vt-title';
+
+    const t = document.startViewTransition(async () => {
+      if (morphFrom) morphFrom.style.viewTransitionName = '';
+      if (isTab) setNav(name);
+      await orig(name);
+      if (morphFrom) {
+        morphTo = name === 'analyticsDetail' ? document.getElementById('analyticsDetailTitle') : rowTitle();
+        if (morphTo) morphTo.style.viewTransitionName = 'vt-title';
+      }
+    });
+    t.finished.finally(() => { if (morphTo) morphTo.style.viewTransitionName = ''; });
+    return t.updateCallbackDone;
+  };
 })();

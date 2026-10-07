@@ -877,3 +877,57 @@ button:focus-visible, .picker-row:focus-visible{outline:1px solid var(--accent);
     transition-duration:.01ms !important;
   }
 }
+
+/* ============================================================
+   page transitions (View Transitions API, driven by fx.js)
+   ============================================================ */
+@property --dot{syntax:'<length>'; inherits:false; initial-value:0px;}
+
+/* the transition replaces the plain enter animation */
+html[data-vt] .view-enter{animation:none;}
+/* the exercise name morphs into this title, so skip its scan-in */
+html[data-vt] #analyticsDetailTitle{animation:none;}
+
+/* dock stays put, active pill slides between tabs */
+.bottom-nav{view-transition-name:dock;}
+.nav-btn.active{view-transition-name:dock-pill;}
+
+::view-transition-group(*){animation-duration:.5s; animation-timing-function:cubic-bezier(.16,1,.3,1);}
+::view-transition-group(dock-pill){animation-duration:.6s; animation-timing-function:cubic-bezier(.34,1.56,.64,1);}
+::view-transition-group(vt-title){animation-duration:.6s;}
+::view-transition-old(root), ::view-transition-new(root){mix-blend-mode:normal;}
+
+@keyframes vt-dots-in{from{--dot:0px;} to{--dot:9px;}}
+@keyframes vt-in-from-right{from{transform:translateX(36px);}}
+@keyframes vt-in-from-left{from{transform:translateX(-36px);}}
+@keyframes vt-out-to-left{to{transform:translateX(-24px) scale(.985); opacity:0; filter:blur(4px);}}
+@keyframes vt-out-to-right{to{transform:translateX(24px) scale(.985); opacity:0; filter:blur(4px);}}
+@keyframes vt-push-in-right{from{transform:translateX(60px); opacity:0;}}
+@keyframes vt-push-in-left{from{transform:translateX(-60px); opacity:0;}}
+@keyframes vt-fade-out{to{opacity:0;}}
+
+/* tabs: new page resolves through a dot-matrix grid */
+html[data-vt^="tab"]::view-transition-new(root){
+  -webkit-mask-image:radial-gradient(circle, #000 var(--dot), transparent calc(var(--dot) + .6px));
+  mask-image:radial-gradient(circle, #000 var(--dot), transparent calc(var(--dot) + .6px));
+  -webkit-mask-size:12px 12px;
+  mask-size:12px 12px;
+}
+html[data-vt="tab-right"]::view-transition-new(root){
+  animation:vt-dots-in .7s cubic-bezier(.5,0,.2,1) both, vt-in-from-right .7s cubic-bezier(.16,1,.3,1) both;
+}
+html[data-vt="tab-left"]::view-transition-new(root){
+  animation:vt-dots-in .7s cubic-bezier(.5,0,.2,1) both, vt-in-from-left .7s cubic-bezier(.16,1,.3,1) both;
+}
+html[data-vt="tab-right"]::view-transition-old(root){animation:vt-out-to-left .45s cubic-bezier(.16,1,.3,1) both;}
+html[data-vt="tab-left"]::view-transition-old(root){animation:vt-out-to-right .45s cubic-bezier(.16,1,.3,1) both;}
+
+/* deeper screens push in from the right, going back slides the other way */
+html[data-vt="forward"]::view-transition-old(root){animation:vt-out-to-left .4s cubic-bezier(.16,1,.3,1) both;}
+html[data-vt="forward"]::view-transition-new(root){animation:vt-push-in-right .55s cubic-bezier(.16,1,.3,1) both;}
+html[data-vt="back"]::view-transition-old(root){animation:vt-out-to-right .4s cubic-bezier(.16,1,.3,1) both;}
+html[data-vt="back"]::view-transition-new(root){animation:vt-push-in-left .55s cubic-bezier(.16,1,.3,1) both;}
+
+/* dock fades out quickly when leaving the tab screens */
+::view-transition-old(dock):only-child,
+::view-transition-old(dock-pill):only-child{animation:vt-fade-out .2s ease both;}
