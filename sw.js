@@ -1,13 +1,12 @@
 // cache name: bump to force update
-const CACHE_NAME = 'workout-tracker-v2';
+const CACHE_NAME = 'workout-tracker-v3';
 const APP_SHELL = [
   './',
   './index.html',
   './style.css',
   './app.js',
+  './fx.js',
   './manifest.json',
-  './fonts/ndot-47.woff2',
-  './fonts/ndot-47-inspired-by-nothing.otf',
   './icons/icon-192.png',
   './icons/icon-512.png',
   './icons/icon-maskable-512.png',
