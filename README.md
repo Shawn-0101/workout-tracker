@@ -1,4 +1,6 @@
 # Workout Tracker
+<img width="484" height="959" alt="image" src="https://github.com/user-attachments/assets/220fe134-2072-4691-8489-7556a0b17206" />
+<img width="481" height="952" alt="image" src="https://github.com/user-attachments/assets/4d5b7758-6fea-408e-a924-7da4981c9fea" />
 
 An offline-first, framework-free progressive web app (PWA) for logging gym workouts and tracking strength progress over time.
 
